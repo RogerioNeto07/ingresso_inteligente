@@ -1,1 +1,45 @@
-<p>checkout works!</p>
+<h1>Carrinho de Compras - Angular Conf 2026</h1>
+
+<div class="checkout-container">
+  @for (item of ingressos(); track item.id) {
+    
+    <app-card [title]="item.nome">
+      
+      <p><strong>Data:</strong> {{ item.data | date:'dd/MM/yyyy' }}</p>
+      
+      <p><strong>Preço:</strong> {{ item.preco | currency:'BRL' }}</p>
+      
+      <p><strong>Benefícios:</strong> {{ item.descricao | resumo:40 }}</p>
+
+      <div class="info-tipo">
+        @switch (item.tipo) {
+          @case ('VIP') { 
+            <span style="color: #ffd700; font-weight: bold;">⭐ Acesso Total</span> 
+          }
+          @case ('MEIA') { 
+            <span style="color: #2196f3;">🎫 Obrigatório carteirinha</span> 
+          }
+          @default { 
+            <span style="color: #757575;">🎟️ Acesso Padrão</span> 
+          }
+        }
+      </div>
+
+    </app-card>
+
+  } @empty {
+    <p>Seu carrinho está vazio.</p>
+  }
+</div>
+
+<hr>
+
+<div class="summary">
+  <h3>Total do Carrinho: {{ totalValue() | currency:'BRL' }}</h3>
+  
+  @if (temBrinde()) {
+    <div class="gift-banner" style="background: #e8f5e9; padding: 10px; border-radius: 8px; border: 1px solid #4caf50;">
+      <strong>🎉 Parabéns! Você ganhou um brinde exclusivo da Angular Conf!</strong>
+    </div>
+  }
+</div>
