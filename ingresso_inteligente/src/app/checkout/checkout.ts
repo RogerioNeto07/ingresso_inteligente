@@ -2,6 +2,7 @@ import { Component, signal, computed } from '@angular/core';
 import { CommonModule, DatePipe, CurrencyPipe } from '@angular/common';
 import { CardComponent } from './card/card';
 import { ResumoPipe } from '../pipes/resumo-pipe';
+import { TicketItemComponent } from './ticket-item/ticket-item';
 
 interface Ingresso {
   id: number;
@@ -15,40 +16,41 @@ interface Ingresso {
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [CommonModule, DatePipe, CurrencyPipe, ResumoPipe, CardComponent],
+  imports: [CommonModule, DatePipe, CurrencyPipe, ResumoPipe, CardComponent, TicketItemComponent],
   templateUrl: './checkout.html'
 })
 export class CheckoutComponent {
-  ingressos = signal<Ingresso[]>([
-    {
-      id: 1,
-      nome: 'Angular Conf Day 1',
-      tipo: 'VIP',
-      data: new Date(2026, 2, 28),
-      preco: 500,
-      descricao: 'Acesso ao lounge exclusivo, buffet liberado e workshop frontal.'
-    },
-    {
-      id: 2,
-      nome: 'Angular Conf Day 2',
-      tipo: 'STANDARD',
-      data: new Date(2026, 2, 29),
-      preco: 250,
-      descricao: 'Acesso às palestras principais e área de networking.'
-    },
-    {
-      id: 3,
-      nome: 'Workshop Meia',
-      tipo: 'MEIA',
-      data: new Date(2026, 2, 30),
-      preco: 125,
-      descricao: 'Entrada para estudantes no workshop prático de Signals.'
+  ingressos = signal<Ingresso[]>([]); 
+
+  ajustarQuantidade(novaQtd: number) {
+    const qtdAtual = this.ingressos().length;
+
+    if (novaQtd > qtdAtual) {
+      this.adicionarIngresso();
+    } else if (novaQtd < qtdAtual) {
+      this.ingressos.update(lista => {
+        const novaLista = [...lista];
+        novaLista.pop(); 
+        return novaLista;
+      });
     }
-  ]);
+  }
 
-  totalValue = computed(() => 
-    this.ingressos().reduce((acc, curr) => acc + curr.preco, 0)
-  );
+  adicionarIngresso() {
+    const novo: Ingresso = {
+      id: Date.now() + Math.random(),
+      nome: `Ingresso #${this.ingressos().length + 1}`,
+      tipo: 'STANDARD',
+      data: new Date(),
+      preco: 150,
+      descricao: 'Acesso padrão adquirido via seletor rápido.'
+    };
+    this.ingressos.update(lista => [...lista, novo]);
+  }
 
-  temBrinde = computed(() => this.ingressos().length > 2);
+  remover(id: number) {
+    this.ingressos.update(lista => lista.filter(item => item.id !== id));
+  }
+
+  totalValue = computed(() => this.ingressos().reduce((acc, curr) => acc + curr.preco, 0));
 }
