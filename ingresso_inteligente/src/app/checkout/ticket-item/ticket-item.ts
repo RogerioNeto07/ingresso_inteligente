@@ -15,7 +15,9 @@ import { Component, input, model, output } from '@angular/core';
 
       <div style="margin-top: 15px;">
         <label>Cupom de Desconto: </label>
-        <input type="text" (keydown.enter)="handleCoupon($event)" placeholder="Digite e aperte Enter">
+        <input #cupomInput type="text" 
+               (keydown.enter)="handleCoupon(cupomInput)" 
+               placeholder="Digite ANGULAR10 e Enter">
       </div>
 
       <button (click)="onCancelClick()" style="margin-top: 15px; color: red;">
@@ -26,10 +28,10 @@ import { Component, input, model, output } from '@angular/core';
 })
 export class TicketItemComponent {
   eventName = input.required<string>();
-
   quantity = model(1);
-
+  
   cancelRequested = output<void>();
+  discountApplied = output<number>();
 
   increment() {
     this.quantity.update(val => val + 1);
@@ -41,9 +43,16 @@ export class TicketItemComponent {
     }
   }
 
-  handleCoupon(event: Event) {
-    const inputElement = event.target as HTMLInputElement;
-    alert(`Buscando cupom: [${inputElement.value}]`);
+  handleCoupon(inputElement: HTMLInputElement) {
+    const cupom = inputElement.value.trim().toUpperCase();
+    
+    if (cupom === 'ANGULAR10') {
+      this.discountApplied.emit(0.10);
+      inputElement.value = '';
+      alert('Cupom aplicado! 10% de desconto.');
+    } else if (cupom !== '') {
+      alert('Cupom inválido!');
+    }
   }
 
   onCancelClick() {

@@ -1,11 +1,12 @@
 <h1>Checkout da Angular Conf 2026</h1>
 
 <app-ticket-item 
-  eventName="Adicionar Ingressos"
+  eventName="Angular Conf 2026"
   [quantity]="ingressos().length"
-  (quantityChange)="ajustarQuantidade($event)" />
+  (quantityChange)="ajustarQuantidade($event)"
+  (discountApplied)="aplicarDesconto($any($event))" /> <hr>
 
-<hr>
+<h3>Total: {{ totalValue() | currency:'BRL' }}</h3>
 
 @for (item of ingressos(); track item.id) {
   

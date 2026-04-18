@@ -20,23 +20,28 @@ interface Ingresso {
   templateUrl: './checkout.html'
 })
 export class CheckoutComponent {
-  ingressos = signal<Ingresso[]>([]); 
+  ingressos = signal<Ingresso[]>([]);
+  percentualDesconto = signal(0);
 
-  totalValue = computed(() => 
-    this.ingressos().reduce((acc, curr) => acc + curr.preco, 0)
-  );
-  
+  totalValue = computed(() => {
+    const bruto = this.ingressos().reduce((acc, curr) => acc + curr.preco, 0);
+    return bruto * (1 - this.percentualDesconto());
+  });
+
   temBrinde = computed(() => this.ingressos().length > 2);
+
+  aplicarDesconto(valor: number) {
+    this.percentualDesconto.set(valor);
+  }
 
   ajustarQuantidade(novaQtd: number) {
     const qtdAtual = this.ingressos().length;
-
     if (novaQtd > qtdAtual) {
       this.adicionarIngresso();
     } else if (novaQtd < qtdAtual) {
       this.ingressos.update(lista => {
         const novaLista = [...lista];
-        novaLista.pop(); 
+        novaLista.pop();
         return novaLista;
       });
     }
