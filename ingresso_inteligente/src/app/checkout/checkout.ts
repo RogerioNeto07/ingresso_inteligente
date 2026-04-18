@@ -22,6 +22,12 @@ interface Ingresso {
 export class CheckoutComponent {
   ingressos = signal<Ingresso[]>([]); 
 
+  totalValue = computed(() => 
+    this.ingressos().reduce((acc, curr) => acc + curr.preco, 0)
+  );
+  
+  temBrinde = computed(() => this.ingressos().length > 2);
+
   ajustarQuantidade(novaQtd: number) {
     const qtdAtual = this.ingressos().length;
 
@@ -37,20 +43,29 @@ export class CheckoutComponent {
   }
 
   adicionarIngresso() {
+    const tipos: ('VIP' | 'STANDARD' | 'MEIA')[] = ['VIP', 'STANDARD', 'MEIA'];
+    const descricoes = {
+      'VIP': 'Acesso ao lounge exclusivo, buffet liberado e workshop frontal com palestrantes.',
+      'STANDARD': 'Acesso às palestras principais, área de networking e kit básico do evento.',
+      'MEIA': 'Entrada para estudantes e professores no workshop prático de Angular Signals.'
+    };
+
+    const tipoSorteado = tipos[Math.floor(Math.random() * tipos.length)];
+    const precoBase = tipoSorteado === 'VIP' ? 500 : (tipoSorteado === 'MEIA' ? 125 : 250);
+
     const novo: Ingresso = {
       id: Date.now() + Math.random(),
-      nome: `Ingresso #${this.ingressos().length + 1}`,
-      tipo: 'STANDARD',
-      data: new Date(),
-      preco: 150,
-      descricao: 'Acesso padrão adquirido via seletor rápido.'
+      nome: `Ingresso ${tipoSorteado} #${this.ingressos().length + 1}`,
+      tipo: tipoSorteado,
+      data: new Date(2026, 2, 28 + this.ingressos().length),
+      preco: precoBase,
+      descricao: descricoes[tipoSorteado]
     };
+
     this.ingressos.update(lista => [...lista, novo]);
   }
 
   remover(id: number) {
     this.ingressos.update(lista => lista.filter(item => item.id !== id));
   }
-
-  totalValue = computed(() => this.ingressos().reduce((acc, curr) => acc + curr.preco, 0));
 }

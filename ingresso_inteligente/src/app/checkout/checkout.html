@@ -1,13 +1,45 @@
+<h1>Checkout da Angular Conf 2026</h1>
+
 <app-ticket-item 
-  eventName="Ingressos"
+  eventName="Adicionar Ingressos"
   [quantity]="ingressos().length"
   (quantityChange)="ajustarQuantidade($event)" />
 
 <hr>
 
 @for (item of ingressos(); track item.id) {
+  
   <app-card [title]="item.nome">
-    <p>Preço: {{ item.preco | currency:'BRL' }}</p>
-    <button (click)='remover(item.id)'>Excluir este</button>
+    <p><strong>Data:</strong> {{ item.data | date:'dd/MM/yyyy' }}</p>
+    <p><strong>Preço:</strong> {{ item.preco | currency:'BRL' }}</p>
+    
+    <p><strong>Benefícios:</strong> {{ item.descricao | resumo:40 }}</p>
+
+    <div class="tipo-badge">
+      @switch (item.tipo) {
+        @case ('VIP') {
+          <span class="vip">Acesso Total</span>
+        }
+        @case ('MEIA') {
+          <span class="meia">Obrigatório carteirinha</span>
+        }
+        @default {
+          <span class="padrao">Acesso Padrão</span>
+        }
+      }
+    </div>
+
+    <button (click)="remover(item.id)">Remover</button>
   </app-card>
+
+} @empty {
+  <p class="empty-msg">Seu carrinho está vazio.</p>
 }
+
+<div class="footer">
+  <h3>Total: {{ totalValue() | currency:'BRL' }}</h3>
+  
+  @if (temBrinde()) {
+    <p>🎉 Você ganhou um brinde!</p>
+  }
+</div>
