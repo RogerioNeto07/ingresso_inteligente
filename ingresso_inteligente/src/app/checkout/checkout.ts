@@ -11,13 +11,15 @@ interface Ingresso {
   data: Date;
   preco: number;
   descricao: string;
+  lotePercentual: number;
 }
 
 @Component({
   selector: 'app-checkout',
   standalone: true,
   imports: [CommonModule, DatePipe, CurrencyPipe, ResumoPipe, CardComponent, TicketItemComponent],
-  templateUrl: './checkout.html'
+  templateUrl: './checkout.html',
+  styleUrl: './checkout.css'
 })
 export class CheckoutComponent {
   ingressos = signal<Ingresso[]>([]);
@@ -64,7 +66,8 @@ export class CheckoutComponent {
       tipo: tipoSorteado,
       data: new Date(2026, 2, 28 + this.ingressos().length),
       preco: precoBase,
-      descricao: descricoes[tipoSorteado]
+      descricao: descricoes[tipoSorteado],
+      lotePercentual: Math.floor(Math.random() * 100)
     };
 
     this.ingressos.update(lista => [...lista, novo]);

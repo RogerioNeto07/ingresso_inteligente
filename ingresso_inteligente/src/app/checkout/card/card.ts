@@ -1,43 +1,31 @@
-import { Component, input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-card',
   standalone: true,
   template: `
-    <div class="card-container">
-      @if (title()) {
-        <h2 class="card-title">{{ title() }}</h2>
-      }
-      
-      <div class="card-content">
-        <ng-content></ng-content>
-      </div>
+    <div class="card-box">
+      <h2 class="titulo">{{ title }}</h2>
+      <ng-content></ng-content>
     </div>
   `,
   styles: [`
-    .card-container {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    .card-box {
+      background-color: var(--card-bg-color, #ffffff);
+      border: 2px solid var(--card-border-color, #ddd);
+      
       padding: 20px;
-      margin-bottom: 20px;
-      border: 1px solid #eee;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
-
-    .card-title {
+    
+    .titulo {
+      color: var(--card-title-color, #333);
       margin-top: 0;
-      color: var(--gray-900);
-      border-bottom: 2px solid var(--bright-blue);
-      display: inline-block;
-      padding-bottom: 5px;
-      margin-bottom: 15px;
-    }
-
-    .card-content {
-      color: var(--gray-700);
     }
   `]
 })
 export class CardComponent {
-  title = input<string>('');
+  @Input() title: string = '';
 }

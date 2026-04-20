@@ -1,0 +1,21 @@
+:host {
+  display: block;
+}
+
+li {
+  list-style: none;
+  margin-bottom: 16px;
+  padding: 0;
+}
+
+.ingresso-destaque {
+  display: block;
+  --card-bg-color: #beaed3;
+  --card-border-color: #cccaba;
+  transform: none;
+}
+
+.carrinho-card {
+  display: block;
+  --card-title-color: purple;
+}
